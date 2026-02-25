@@ -257,6 +257,15 @@ MIT. See [LICENSE](LICENSE).
 
 ## Citation
 
-> Campbell, K. (2026). *Das Eimerargument*: Weber bracket deviation in
+> Campbell, T. (2026). *Das Eimerargument*: Weber bracket deviation in
 > spinning toroidal geometry at 28-digit precision.
 > https://github.com/DeepBlueDynamics/das-eimerargument
+
+## Copyright
+
+The concept, experimental design, and theoretical framework described in this
+repository are copyright Thomas Campbell, New Braunfels, Texas, 2026.
+
+The simulation source code is released under the MIT license (see [LICENSE](LICENSE)).
+The scientific claim, falsification protocol, and proposed experimental geometry
+are the intellectual work of the author.
