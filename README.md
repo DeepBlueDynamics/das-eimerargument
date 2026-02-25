@@ -253,7 +253,33 @@ data/            — Reference CSV output
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+This repository contains two categories of work under different licenses.
+
+**Source code** (`src/`, `kernels/`, `build.rs`, `Cargo.toml`) is released under
+the MIT license. See [LICENSE-CODE](LICENSE-CODE).
+
+**Creative and scientific content** (`README.md`, `data/`, the experimental design,
+theoretical framework, falsification protocol, and proposed experimental geometry)
+is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+International license (CC BY-NC-SA 4.0), with the additional restrictions described
+below. See [LICENSE-CONTENT](LICENSE-CONTENT).
+
+### Additional Restrictions
+
+This work — in whole or in part, including the source code, data, concepts,
+experimental designs, and derived works — may NOT be used by:
+
+1. **Any military organization**, including but not limited to: armed forces,
+   defense departments, military contractors, defense intelligence agencies,
+   or any entity whose primary function is the preparation for or conduct of
+   armed conflict, of any nation.
+
+2. **Cloudflare, Inc.**, its subsidiaries, affiliates, contractors, or any
+   entity acting on its behalf.
+
+Use by the above parties is explicitly prohibited regardless of which license
+(MIT or CC BY-NC-SA 4.0) would otherwise apply. This restriction survives
+forking, redistribution, and modification.
 
 ## Citation
 
@@ -263,9 +289,5 @@ MIT. See [LICENSE](LICENSE).
 
 ## Copyright
 
-The concept, experimental design, and theoretical framework described in this
-repository are copyright Thomas Campbell, New Braunfels, Texas, 2026.
-
-The simulation source code is released under the MIT license (see [LICENSE](LICENSE)).
-The scientific claim, falsification protocol, and proposed experimental geometry
-are the intellectual work of the author.
+Copyright Thomas Campbell, New Braunfels, Texas, 2026. All rights reserved
+except as explicitly granted above.
