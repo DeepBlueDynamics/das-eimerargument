@@ -1,0 +1,4 @@
+target/
+.git/
+*.csv
+!data/*.csv
