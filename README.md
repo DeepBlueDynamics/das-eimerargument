@@ -56,6 +56,38 @@ A flat ring spinning about its symmetry axis, with coaxial source elements, has 
 
 A **torus** breaks this degeneracy. Particles on the minor cross-section have varying distances and angles to each source element. The bracket deviation varies across particles, and spinning introduces asymmetric radial velocity components that a flat ring does not have. The torus is not a convenience — it is the minimal geometry that produces a differential signal.
 
+## The Non-Cancellation Mechanism
+
+The coupling signal is not a generic v²/c² effect. It arises from a specific geometric mechanism: **non-canceling signed radial projections** across the torus minor cross-section.
+
+On a coaxial ring, the unit vector R̂ from each particle to each source element is the same for all particles at a given major angle φ. The radial velocity projection ṙ = v · R̂ cancels when summed over the ring. The bracket-weighted impulse integrates to zero over a cycle. Symmetry enforces this — not physics.
+
+On a torus, particles sit at different minor angles θ around the cross-section. A particle on the inner edge of the torus (closest to the axis, facing "through the hole") sees a source element at a different R̂ than a particle on the outer edge. Their radial velocity projections ṙ have different magnitudes and can have different signs. The bracket contribution varies systematically with minor angle:
+
+- **Inner edge** (toward axis): shorter R, larger 1/r², stronger bracket contribution
+- **Outer edge** (away from axis): longer R, smaller 1/r², weaker contribution
+- **Top/bottom of cross-section**: intermediate R, but velocity has a radial component along R̂ that the inner/outer edges lack
+
+This variation does not cancel when summed over the minor cross-section. The net bracket-weighted force on the torus, integrated over one revolution, has a non-zero remainder. This remainder is the coupling signal.
+
+The mechanism is purely geometric. It requires no retardation, no field propagation, no time nonlocality. Weber's force law is instantaneous and single-time. The non-cancellation comes from R̂ varying with minor angle θ in a way that correlates with the velocity direction of spinning particles. A flat ring has no minor angle. A torus does.
+
+### Predictions of this mechanism
+
+1. **The effect vanishes as r → 0.** Continuously shrink the minor radius toward zero, keeping R and ω fixed. The torus degenerates into a ring. The minor-angle variation of R̂ disappears. The bracket contributions become uniform. The coupling signal goes to zero. This is the definitive test: if the effect does not vanish smoothly as r → 0, it is not geometric — it is a bug.
+
+2. **The effect has minor-angle structure.** Freeze time at a single snapshot. Compute the bracket contribution per particle-source pair. Bin by minor angle θ. One side of the cross-section should consistently contribute more than the other. The pattern should rotate with the torus. If the distribution is uniform in θ, the geometric mechanism is not operating.
+
+3. **The effect is independent of integration order.** Compute all forces from fully synchronized state at time t, then update all positions and velocities to t+dt. Compare with any scheme that updates in-place. If the coupling signal changes materially, it is an integration artifact (stale-state asymmetry), not geometry. Weber's force is instantaneous — there should be no sensitivity to update ordering at the dt → 0 limit.
+
+4. **The effect depends on offset geometry.** Displace a flat ring off-axis from the magnet stack. This also breaks the R̂ symmetry and should produce a non-zero coupling signal. The torus is one way to break degeneracy. Offset is another. Both should work.
+
+### What this is not
+
+This is not a Berry phase or geometric holonomy in the quantum-mechanical sense, though the mathematical structure is analogous (a closed loop in configuration space producing a net remainder). It is not retardation or advanced interaction — Weber's bracket is evaluated at a single instant in global time. It is not "back in time through the hole" except as a geometric metaphor: particles on the inner edge of the torus interact with source elements at closer range and different angle than particles on the outer edge, producing an asymmetric bracket contribution that does not cancel over the cross-section.
+
+The phrase "through the hole" refers to the geometric fact that source elements on the opposite side of the torus axis are seen differently by inner-edge vs. outer-edge particles. The asymmetry is spatial, not temporal.
+
 ## Method
 
 Four identical bodies evolve under the same external forces:
