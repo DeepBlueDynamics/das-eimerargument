@@ -1,0 +1,39 @@
+[package]
+name = "weber-anomaly"
+version = "0.1.0"
+edition = "2021"
+description = "Weber inertial anomaly detector — 28-digit decimal six-phase simulation"
+default-run = "weber-anomaly"
+build = "build.rs"
+
+[features]
+default = []
+gpu = ["cudarc"]
+
+[dependencies]
+rust_decimal = { version = "1.36", features = ["serde-with-str"] }
+rust_decimal_macros = "1.36"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cudarc = { version = "0.12", features = ["cuda-12060"], optional = true }
+
+[[bin]]
+name = "weber-anomaly"
+path = "src/main.rs"
+
+[[bin]]
+name = "shake-test"
+path = "src/bin/shake_test.rs"
+
+[[bin]]
+name = "debug-weber"
+path = "src/bin/debug_weber.rs"
+
+[[bin]]
+name = "field-residual"
+path = "src/bin/field_residual.rs"
+
+[[bin]]
+name = "brake-recoil"
+path = "src/bin/brake_recoil.rs"
+
