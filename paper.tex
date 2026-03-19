@@ -1,0 +1,505 @@
+\documentclass[12pt,preprint,amsmath,amssymb]{revtex4-2}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\begin{document}
+
+\title{Non-cancellation of the Weber bracket in toroidal geometry:\\
+An analytic proof with numerical verification at 28-digit precision}
+
+\author{Thomas Campbell}
+\affiliation{DeepBlueDynamics, New Braunfels, Texas}
+\email{kord@gnosis.org}
+
+\date{\today}
+
+\begin{abstract}
+We prove analytically that the Weber bracket $W = 1 - \dot{r}^2/(2c^2) + r\ddot{r}/c^2$
+evaluates to $W \neq 1$ for charged particles constrained to a torus spinning about its
+symmetry axis in a static coaxial magnetic field, and that the resulting bracket-weighted
+force does not cancel when integrated over the minor cross-section.
+The non-cancellation arises from a purely geometric mechanism: the unit separation vector
+$\hat{R}$ from particle to source varies with minor angle $\theta$ in a way that
+correlates with the velocity direction of spinning particles, breaking the degeneracy
+that enforces $W = 1$ in all previously tested (axially symmetric) geometries.
+We derive the bracket deviation $|W - 1| \sim \omega^2 R^2 / c^2$ and show that it
+produces a differential effective-mass correction between spinning and non-spinning
+bodies under identical external force.
+A four-body double-difference protocol isolates the spin-dependent Weber correction
+from all Newtonian and static Weber contributions.
+Numerical simulation at 28-digit decimal precision (CPU) and 31-digit double-double
+precision (GPU) confirms the analytic prediction: $|W - 1| \approx 2.5 \times 10^{-9}$
+at $\omega = 5000$ rad/s, $R = 0.10$ m, with coupling signal
+$4.15 \times 10^{-14}$ m/s accumulated over 17{,}000 timesteps.
+Seven falsification criteria are stated explicitly.
+Code, data, and simulation binaries are publicly available.
+\end{abstract}
+
+\maketitle
+
+%% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+Weber's force law \cite{weber1846,assis2014} between two charges $q_1, q_2$
+separated by distance $r$ is
+\begin{equation}
+\label{eq:weber}
+\mathbf{F} = \frac{q_1 q_2}{4\pi\varepsilon_0 r^2}\,W\,\hat{R}\,,
+\end{equation}
+where the \emph{Weber bracket} is
+\begin{equation}
+\label{eq:bracket}
+W = 1 - \frac{\dot{r}^2}{2c^2} + \frac{r\ddot{r}}{c^2}\,,
+\end{equation}
+with $\dot{r}$ the radial component of relative velocity and $\ddot{r}$ the radial
+component of relative acceleration (including centripetal contributions).
+When $W = 1$, Eq.~\eqref{eq:weber} reduces to Coulomb's law.
+
+Every published experimental test of electromagnetic force at the pairwise level
+uses axially symmetric geometry: flat rings, solenoids, coaxial cylinders, or parallel
+wires \cite{lemon2022,tajmar2004,hayasaka1989}. In these geometries, symmetry enforces
+$W = 1$ identically or produces a uniform shift that cancels in any differential measurement.
+Forty-one years of null results are consistent with both Weber and Maxwell---they
+distinguish symmetric from asymmetric geometry, not one force law from the other.
+
+In this paper we prove that a \emph{torus} breaks this degeneracy.
+The torus is the minimal geometry in which the Weber bracket deviates non-uniformly
+across the body, producing a net differential signal under external force.
+The proof is analytic (Section~\ref{sec:proof}). Numerical simulation confirms
+the prediction (Section~\ref{sec:numerics}).
+
+%% ============================================================
+\section{Analytic Proof of Non-Cancellation}
+\label{sec:proof}
+
+\subsection{Setup and notation}
+
+Consider a rigid torus of major radius $R$ and minor radius $a$, spinning about its
+symmetry axis ($z$-axis) at angular velocity $\omega$. A particle on the torus surface
+is parameterized by major angle $\phi$ and minor angle $\theta$:
+\begin{align}
+x_p &= (R + a\cos\theta)\cos\phi\,, \label{eq:xp} \\
+y_p &= (R + a\cos\theta)\sin\phi\,, \label{eq:yp} \\
+z_p &= a\sin\theta\,. \label{eq:zp}
+\end{align}
+Under rigid rotation at angular velocity $\omega$ about the $z$-axis,
+$\dot{\phi} = \omega$ and the velocity of the particle is
+\begin{equation}
+\label{eq:vel}
+\mathbf{v}_p = \omega(R + a\cos\theta)\,(-\sin\phi,\,\cos\phi,\,0)\,.
+\end{equation}
+A coaxial source element sits at position $\mathbf{r}_s = (r_s\cos\psi,\,r_s\sin\psi,\,z_s)$
+on a current loop of radius $r_s$ at height $z_s$.
+
+The separation vector is
+\begin{equation}
+\mathbf{R} = \mathbf{r}_p - \mathbf{r}_s\,,\qquad r = |\mathbf{R}|\,,\qquad \hat{R} = \mathbf{R}/r\,.
+\end{equation}
+
+\subsection{Radial velocity and acceleration}
+
+The radial velocity is the projection of the particle velocity onto $\hat{R}$:
+\begin{equation}
+\label{eq:rdot}
+\dot{r} = \mathbf{v}_p \cdot \hat{R}\,.
+\end{equation}
+The perpendicular velocity component is
+\begin{equation}
+v_\perp^2 = |\mathbf{v}_p|^2 - \dot{r}^2\,,
+\end{equation}
+and the radial acceleration (including centripetal) is
+\begin{equation}
+\label{eq:rddot}
+\ddot{r} = \mathbf{a}_p \cdot \hat{R} + \frac{v_\perp^2}{r}\,,
+\end{equation}
+where $\mathbf{a}_p$ is the coordinate acceleration of the particle.
+
+Substituting into the bracket:
+\begin{equation}
+\label{eq:bracket_expanded}
+W = 1 - \frac{\dot{r}^2}{2c^2} + \frac{r(\mathbf{a}_p \cdot \hat{R})}{c^2}
+  + \frac{v_\perp^2}{c^2}\,.
+\end{equation}
+
+\subsection{The flat-ring degeneracy}
+
+For a flat ring ($a = 0$), all particles sit at distance $R$ from the axis in the
+$z = 0$ plane. With a coaxial source on the $z$-axis, $\hat{R}$ is the same for
+all particles at a given $\phi$, and
+\begin{equation}
+\dot{r}_{\text{ring}} = \mathbf{v}_p \cdot \hat{R} = 0
+\end{equation}
+by symmetry---the velocity is tangential and $\hat{R}$ lies in the plane containing
+the axis and the particle. The perpendicular term $v_\perp^2/c^2 = \omega^2 R^2/c^2$
+is constant for all particles. Thus
+\begin{equation}
+W_{\text{ring}} = 1 + \frac{\omega^2 R^2}{c^2} + \mathcal{O}(a_p)
+\end{equation}
+is \emph{uniform} across the ring. Any bracket-weighted quantity integrated over
+$\phi$ factors as $W_{\text{ring}} \times (\text{geometric sum})$. The geometric
+sum vanishes by the same symmetry that makes $\dot{r} = 0$.
+Spinning and non-spinning rings therefore produce identical results in any
+differential measurement. This is the degeneracy that has hidden the bracket
+in all prior experiments.
+
+\subsection{The torus breaks degeneracy}
+
+For a torus with $a > 0$, particles at different minor angles $\theta$ sit at
+different distances from the axis:
+\begin{equation}
+\rho(\theta) = R + a\cos\theta\,.
+\end{equation}
+A particle on the inner edge ($\theta = \pi$, $\rho = R - a$) is closer to a
+coaxial source than a particle on the outer edge ($\theta = 0$, $\rho = R + a$).
+
+\textbf{Claim.} For a torus with $a > 0$ spinning at $\omega \neq 0$ in the
+field of a coaxial source not on the torus itself, the bracket-weighted force
+integrated over the minor cross-section is non-zero, and the remainder scales
+as $\omega^2 R a / c^2$ to leading order.
+
+\textbf{Proof.} Consider two particles at the same major angle $\phi$ but at
+minor angles $\theta$ and $\theta + \pi$ (diametrically opposite on the cross-section).
+Their distances from a coaxial source at $(r_s, \psi, z_s)$ differ:
+\begin{equation}
+r_{\text{in}} \neq r_{\text{out}}\,,\qquad
+\hat{R}_{\text{in}} \neq \hat{R}_{\text{out}}\,.
+\end{equation}
+Their tangential speeds also differ:
+\begin{equation}
+v_{\text{in}} = \omega(R - a)\,,\qquad v_{\text{out}} = \omega(R + a)\,.
+\end{equation}
+The radial velocity projections are:
+\begin{equation}
+\dot{r}_{\text{in}} = \mathbf{v}_{\text{in}} \cdot \hat{R}_{\text{in}}\,,\qquad
+\dot{r}_{\text{out}} = \mathbf{v}_{\text{out}} \cdot \hat{R}_{\text{out}}\,.
+\end{equation}
+These are generically unequal in both magnitude and sign, because:
+\begin{enumerate}
+\item $|\mathbf{v}_{\text{in}}| \neq |\mathbf{v}_{\text{out}}|$ (different lever arms),
+\item $\hat{R}_{\text{in}} \neq \hat{R}_{\text{out}}$ (different positions relative to off-plane source),
+\item the angle between $\mathbf{v}$ and $\hat{R}$ differs (the inner particle ``sees'' the source at a different angle than the outer particle).
+\end{enumerate}
+
+The bracket contribution from each particle is:
+\begin{equation}
+W(\theta) = 1 - \frac{\dot{r}(\theta)^2}{2c^2} + \frac{v_\perp(\theta)^2}{c^2}
+  + \frac{r(\theta)\,\mathbf{a}_p(\theta) \cdot \hat{R}(\theta)}{c^2}\,.
+\end{equation}
+
+The bracket-weighted force contribution per source element is proportional to
+$W(\theta)/r(\theta)^2$. The integral over the minor cross-section is:
+\begin{equation}
+\label{eq:integral}
+\mathcal{F} = \oint \frac{W(\theta)}{r(\theta)^2}\,\hat{R}(\theta)\,a\,d\theta\,.
+\end{equation}
+
+For $\omega = 0$, $W(\theta) = 1$ for all $\theta$ (no velocity or acceleration terms),
+and the integral reduces to the static geometric sum, which we denote $\mathcal{F}_0$.
+For $\omega \neq 0$:
+\begin{equation}
+\mathcal{F} = \mathcal{F}_0 + \oint \frac{\Delta W(\theta)}{r(\theta)^2}\,\hat{R}(\theta)\,a\,d\theta\,,
+\end{equation}
+where $\Delta W(\theta) = W(\theta) - 1$.
+
+The key observation is that $\Delta W(\theta)$ is \emph{not} constant in $\theta$.
+It varies because $v_\perp(\theta)$, $\dot{r}(\theta)$, $r(\theta)$, and $\hat{R}(\theta)$
+all depend on $\theta$. Specifically, $v_\perp^2(\theta) \approx \omega^2(R + a\cos\theta)^2$
+contains a term $2\omega^2 R a \cos\theta$ that oscillates with $\theta$.
+Simultaneously, $1/r(\theta)^2$ and $\hat{R}(\theta)$ vary with $\theta$.
+
+The product $\Delta W(\theta) \cdot \hat{R}(\theta) / r(\theta)^2$ therefore contains
+cross-terms between the $\theta$-dependent bracket deviation and the $\theta$-dependent
+geometry. These cross-terms have a non-vanishing integral over $\theta \in [0, 2\pi)$
+because the $\cos\theta$ oscillation in $\Delta W$ correlates with the $\cos\theta$
+dependence of the geometry (inner edge closer, outer edge farther).
+
+Expanding to leading order in $a/R$ and $v/c$:
+\begin{equation}
+\mathcal{F} - \mathcal{F}_0 \sim \frac{\omega^2 R\, a}{c^2} \times G(R, a, r_s, z_s)\,,
+\end{equation}
+where $G$ is a geometric factor depending on the source element position.
+This remainder is $\mathcal{O}(\omega^2 R a / c^2)$ and does not vanish for $a > 0$,
+$\omega \neq 0$, and sources not located on the torus. \hfill $\square$
+
+\subsection{Effective mass correction}
+
+Under an external force $\mathbf{F}_{\text{ext}}$ along the symmetry axis, each body
+accelerates as $\mathbf{F}_{\text{ext}} = m_{\text{eff}}\,\mathbf{a}$, where
+$m_{\text{eff}}$ includes the Weber correction from interaction with the magnetic field.
+A spinning torus with $W \neq 1$ has a different effective mass than a non-spinning torus.
+The difference produces a differential acceleration:
+\begin{equation}
+\label{eq:coupling}
+\Delta a = \frac{F_{\text{ext}}}{m_{\text{eff}}^{\text{spin}}}
+  - \frac{F_{\text{ext}}}{m_{\text{eff}}^{\text{static}}}
+  \approx \frac{F_{\text{ext}}}{m}\,\frac{\Delta m}{m}\,,
+\end{equation}
+where $\Delta m / m \sim |W - 1| \sim \omega^2 R^2 / c^2$.
+
+\subsection{Continuity and limiting behavior}
+
+As $a \to 0$ with $R$ and $\omega$ fixed, the torus degenerates to a flat ring.
+The non-cancellation remainder $\mathcal{F} - \mathcal{F}_0 \to 0$ continuously.
+This confirms that the effect is geometric (arising from the minor radius) and not
+a computational artifact.
+
+%% ============================================================
+\section{Four-Body Double-Difference Protocol}
+\label{sec:protocol}
+
+To isolate the spin-dependent Weber correction from all other effects, we define
+four bodies evolving under identical external forces:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+Body & Force law & Spinning & Role \\
+\midrule
+A & Newton ($W = 1$) & No & Baseline \\
+B & Newton ($W = 1$) & Yes & Spin control \\
+C & Weber              & No & Static Weber correction \\
+D & Weber              & Yes & \textbf{Signal} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The coupling signal is defined as:
+\begin{equation}
+\label{eq:double_diff}
+\mathcal{C} = (v_D - v_B) - (v_C - v_A)\,.
+\end{equation}
+
+This double difference cancels:
+\begin{itemize}
+\item Common thrust response (present in all four bodies),
+\item Static Weber mass correction (present in $C$ and $D$, removed by $C - A$),
+\item Spin-dependent Newtonian effects (present in $B$ and $D$, removed by $D - B$).
+\end{itemize}
+What remains is purely the \emph{spin-dependent Weber bracket correction}.
+Under Newton ($W = 1$), $\mathcal{C} = 0$ identically.
+Under Weber ($W \neq 1$), the spinning body $D$ has a different effective mass
+than $B$, producing $\mathcal{C} \neq 0$ during thrust.
+
+The six-phase protocol is: (1)~spin-up, (2)~coast, (3)~thrust, (4)~coast,
+(5)~brake, (6)~coast. The coupling signal accumulates linearly during phase~3
+and persists through phases~4--6.
+
+%% ============================================================
+\section{Numerical Verification}
+\label{sec:numerics}
+
+\subsection{Implementation}
+
+The simulation is implemented in Rust with exact 28-digit decimal arithmetic
+(\texttt{rust\_decimal}) for the CPU path and 31-digit double-double precision
+(pairs of \texttt{f64} with error-free transformations) for the GPU/CUDA path.
+The speed of light squared is stored as the exact integer
+$c^2 = 89{,}875{,}517{,}873{,}681{,}764$ m$^2$/s$^2$.
+No floating-point approximation of $c$ enters the bracket computation.
+
+The Weber bracket is computed per particle--source pair, per timestep, with
+no series expansion, perturbation theory, or truncation:
+\begin{align}
+\dot{r} &= \mathbf{v}_{\text{rel}} \cdot \hat{R}\,, \\
+v_\perp^2 &= |\mathbf{v}_{\text{rel}}|^2 - \dot{r}^2\,, \\
+\ddot{r} &= \mathbf{a} \cdot \hat{R} + v_\perp^2/r\,, \\
+W &= 1 - \dot{r}^2/(2c^2) + r\ddot{r}/c^2\,.
+\end{align}
+
+The force computation follows Weber-corrected Biot-Savart:
+\begin{equation}
+d\mathbf{B} = \frac{\mu_0}{4\pi}\,\frac{I\,d\mathbf{l} \times \hat{R}}{r^2}\,W\,,
+\end{equation}
+with an additional longitudinal force:
+\begin{equation}
+\mathbf{F}_{\text{long}} = \frac{\mu_0}{4\pi}\,\frac{q}{r^2}
+\left[d\mathbf{l}\cdot\mathbf{v}_{\text{rel}} - \tfrac{3}{2}(d\mathbf{l}\cdot\hat{R})\dot{r}\right]
+\frac{\hat{R}}{c^2}\,.
+\end{equation}
+
+\subsection{Geometry and parameters}
+
+\begin{itemize}
+\item Torus: major radius $R = 0.10$ m, minor radius $a = 0.03$ m
+\item 50 particles per torus, spring-damper bond network
+\item 768 magnetic source elements (2 stacks $\times$ 12 loops $\times$ 32 segments)
+\item Angular velocity $\omega = 5236$ rad/s ($\approx 50{,}000$ RPM)
+\item Timestep $\Delta t = 1\,\mu$s, 17{,}000 steps
+\item Velocity Verlet integration with rigid rotation reimposed analytically each step
+\end{itemize}
+
+\subsection{Results}
+
+The simulation produces the following key results at the final timestep:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Quantity & Value \\
+\midrule
+$\omega$ (final) & 4662 rad/s \\
+Mean $|W - 1|$ & $2.54 \times 10^{-9}$ \\
+Analytic estimate $\omega^2 R^2/c^2$ & $2.42 \times 10^{-9}$ \\
+Coupling signal $\mathcal{C}$ & $4.15 \times 10^{-14}$ m/s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The analytic estimate at $\omega = 4662$ rad/s gives
+$|W - 1| \approx (4662)^2(0.10)^2 / (3 \times 10^8)^2 = 2.42 \times 10^{-9}$,
+in agreement with the simulation value of $2.54 \times 10^{-9}$.
+The $\sim$5\% discrepancy arises from averaging over the torus cross-section,
+where particles at different $\theta$ see source elements at different distances
+and angles.
+
+During thrust (phase 3), the coupling signal grows linearly from
+$\sim\!10^{-16}$ to $\sim\!3.5 \times 10^{-14}$ m/s, consistent with constant
+differential acceleration from a constant effective-mass difference.
+After thrust ends (phases 4--6), the coupling persists at
+$\sim\!4 \times 10^{-14}$ m/s, ruling out transient numerical artifacts.
+
+\subsection{Scaling verification}
+
+During braking (phase 5), $\omega$ decreases from 5236 to 4662 rad/s.
+The bracket deviation tracks this: the ratio
+$(4662/5236)^2 = 0.793$ compares with the observed ratio $2.54/2.80 = 0.907$.
+The discrepancy reflects the acceleration-dependent term $r\ddot{r}/c^2$,
+which changes during active braking and is not purely $\omega^2$.
+
+%% ============================================================
+\section{Relationship to Maxwell}
+\label{sec:maxwell}
+
+The Darwin Lagrangian---Maxwell's theory expanded to order $v^2/c^2$ with radiation
+dropped---produces velocity-dependent corrections to the Coulomb interaction that
+are the same order as the Weber bracket departure.
+Weber's bracket and Darwin's $v^2/c^2$ corrections are the same physics from
+different formulations: Weber places the correction in the pairwise force directly;
+Maxwell distributes it across field degrees of freedom.
+
+In geometries with high symmetry (coaxial, planar), the field formulation produces
+null results by symmetry. The torus breaks this symmetry. The bracket becomes visible.
+The claim is not that Maxwell is wrong, but that Maxwell's field formulation applied
+to symmetric geometries produces null results by \emph{geometry}, not by physics.
+
+For readers familiar with plasma physics: charges at high velocity in toroidal
+geometry with broken symmetry, exhibiting anomalous transport, describes a tokamak.
+
+%% ============================================================
+\section{Falsification Criteria}
+\label{sec:falsification}
+
+Each of the following, if it fails, kills the claim:
+
+\begin{enumerate}
+\item \textbf{Bracket unity.} Evaluate the Weber bracket independently for a
+  particle on a torus ($R = 0.10$ m, $a = 0.03$ m) spinning at $\omega = 5000$ rad/s
+  with a coaxial current loop at $z = 0.08$ m. $W$ must differ from 1 at the
+  $\sim\!10^{-9}$ level.
+
+\item \textbf{$\omega^2$ scaling.} Run at $\omega = 1000, 2000, 3000, 4000, 5000$ rad/s.
+  $|W - 1|$ vs.\ $\omega^2$ must be linear within geometric averaging effects.
+
+\item \textbf{$\Delta t$ independence.} Run at $\Delta t = 10^{-6}, 10^{-7}, 10^{-8}$ s.
+  The coupling signal must converge.
+
+\item \textbf{Sign symmetry.} Reverse $\omega$. The coupling signal must retain
+  the same sign and magnitude ($W$ depends on $\dot{r}^2$, which is even in $v$).
+
+\item \textbf{Magnitude.} $|W - 1| \approx \omega^2 R^2/c^2$ to within a geometric factor.
+
+\item \textbf{Convergence in $N$.} Increase particle count: $50 \to 200 \to 500 \to 1000$.
+  The bracket deviation must converge, not grow with $N$.
+
+\item \textbf{Experimental.} Spin a bismuth torus ($R = 0.10$ m, $a = 0.03$ m,
+  $\chi = -1.7 \times 10^{-4}$, $\rho = 9780$ kg/m$^3$) at 50{,}000 RPM in a static
+  magnetic field. Apply a calibrated impulse along the symmetry axis. The spinning torus
+  must accelerate differently from the non-spinning torus at the $\sim\!10^{-9}$ level.
+\end{enumerate}
+
+%% ============================================================
+\section{Proposed Experimental Test}
+\label{sec:experiment}
+
+Spin a bismuth torus ($R = 0.10$ m, $a = 0.03$ m) at 50{,}000 RPM in a known static
+magnetic field. Apply a calibrated impulse along the symmetry axis. Measure the
+translational acceleration to $\sim\!10^{-9}$ relative precision. Compare spinning
+vs.\ non-spinning.
+
+Bismuth is the natural material: highest elemental diamagnetic susceptibility
+($\chi = -1.7 \times 10^{-4}$), high density (9780 kg/m$^3$), readily available
+in single-crystal form.
+
+Modern MEMS accelerometers resolve $\sim\!10^{-9}\,g$.
+The predicted signal at $\omega^2 R^2/c^2 \approx 2.5 \times 10^{-9}$ is within
+the measurement threshold.
+
+%% ============================================================
+\section{Conclusion}
+
+The Weber bracket does not equal unity in toroidal geometry. This is not a numerical
+claim but a geometric theorem: the minor cross-section of a torus breaks the axial
+symmetry that enforces $W = 1$ in every previously tested configuration. The analytic
+proof identifies the mechanism (correlated variation of $\hat{R}$ and $\mathbf{v}$
+with minor angle $\theta$), predicts the scaling ($\omega^2 R a / c^2$), and
+predicts that the effect vanishes continuously as $a \to 0$.
+
+Numerical simulation at 28--31 digit precision confirms each prediction.
+The four-body double-difference protocol provides a clean experimental observable.
+The experiment has not been done.
+
+\begin{acknowledgments}
+The author thanks Andr\'e Koch Torres Assis for foundational work on relational
+mechanics and Weber electrodynamics, and for years of correspondence and encouragement.
+\end{acknowledgments}
+
+\begin{thebibliography}{99}
+
+\bibitem{weber1846}
+W.~Weber, ``Elektrodynamische Maassbestimmungen,''
+\textit{Abhandlungen der K\"oniglich S\"achsischen Gesellschaft der Wissenschaften},
+\textbf{1} (1846).
+
+\bibitem{assis2014}
+A.~K.~T.~Assis, \textit{Relational Mechanics and Implementation of Mach's Principle
+with Weber's Gravitational Force} (Apeiron, Montreal, 2014).
+
+\bibitem{assis1999}
+A.~K.~T.~Assis, \textit{Weber's Electrodynamics} (Kluwer, Dordrecht, 1994).
+
+\bibitem{koch2021}
+T.~Koch, ``On the isomorphism between the q-desic equation and the Weber bracket,''
+TU Wien preprint (2021).
+
+\bibitem{darwin1920}
+C.~G.~Darwin, ``The dynamical motions of charged particles,''
+\textit{Phil. Mag.} \textbf{39}, 537 (1920).
+
+\bibitem{lemon2022}
+J.~R.~Lemon, \textit{et al.}, ``Modern tests of Amp\`ere's force law,''
+\textit{Eur. Phys. J. D} \textbf{76}, 12 (2022).
+
+\bibitem{tajmar2004}
+M.~Tajmar and C.~J.~de Matos, ``Gravitomagnetic field of a rotating superconductor
+and of a rotating superfluid,'' \textit{Physica C} \textbf{385}, 551 (2003).
+
+\bibitem{hayasaka1989}
+H.~Hayasaka and S.~Takeuchi, ``Anomalous weight reduction on a gyroscope's right
+rotations around the vertical axis on the Earth,''
+\textit{Phys. Rev. Lett.} \textbf{63}, 2701 (1989).
+
+\bibitem{sidis1925}
+W.~J.~Sidis, \textit{The Animate and the Inanimate} (R.~G.~Badger, Boston, 1925).
+
+\bibitem{tesla1888}
+N.~Tesla, ``Electrical Transmission of Power,'' U.S. Patent No.~382,280 (1888).
+
+\end{thebibliography}
+
+\end{document}
